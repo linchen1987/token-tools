@@ -1,12 +1,15 @@
 import { Client, Wallet } from 'xrpl';
+import dotenv from 'dotenv';
 
-// const account1Address = 'rNvW4eQtrBY8GKHGYHYt8Nd7K617LibHWX';
-// const account1Seed = 'sEdS7AAbV7ZQH4jcKcpoZmbYyAcvQdv';
-const account1Address = 'rJSVmuok6bSHtydsY412xfSo2Yx54M8GEg';
-const account1Seed = 'sEdSbJmHGYrD8DwmNugRSYrHtFbvvSV';
-const account2Address = 'r3FS6prf2zrZ1PwKNjumJmUDWEX44hGVD6';
+// 加载环境变量
+dotenv.config();
 
-async function getXRPAccountInfo(accountAddress: string) {
+// 从环境变量中读取账户信息
+const fromAddress = process.env.FROM_ADDRESS!;
+const fromSeed = process.env.FROM_SEED!;
+const toAddress = process.env.TO_ADDRESS!;
+
+async function getXRPAccountInfo(fromAddress: string) {
   // 连接到 XRP Testnet
   const client = new Client('wss://s.altnet.rippletest.net:51233');
   await client.connect();
@@ -19,7 +22,7 @@ async function getXRPAccountInfo(accountAddress: string) {
     // 获取账户信息
     const account_info = await client.request({
       command: 'account_info',
-      account: accountAddress,
+      account: fromAddress,
       ledger_index: 'validated',
     });
 
@@ -40,25 +43,24 @@ async function sendXRP() {
   await client.connect();
 
   try {
-    // 创建钱包实例
-    const wallet = Wallet.fromSeed(account1Seed);
+    const wallet = Wallet.fromSeed(fromSeed);
     console.log('Sending from wallet address:', wallet.address);
 
-    // 准备交易
     const prepared = await client.autofill({
       TransactionType: 'Payment',
       Account: wallet.address,
-      Amount: '90000000', // 90 XRP (以 drops 为单位)
-      Destination: account2Address,
+      Amount: '8000000',
+      Destination: toAddress,
     });
 
-    // 签名交易
     const signed = wallet.sign(prepared);
     console.log('Transaction hash:', signed.hash);
 
-    // 提交交易
     const result = await client.submitAndWait(signed.tx_blob);
-    console.log('Transaction result:', result.result.meta.TransactionResult);
+    // 修复类型错误，添加类型检查
+    if (typeof result.result.meta === 'object' && result.result.meta) {
+      console.log('Transaction result:', result.result.meta.TransactionResult);
+    }
     console.log('Transaction details:', JSON.stringify(result, null, 2));
   } catch (error) {
     console.error('Error:', error);
@@ -68,6 +70,5 @@ async function sendXRP() {
 }
 
 // 执行函数
-// getXRPAccountInfo(account2Address).catch(console.error);
-getXRPAccountInfo(account1Address).catch(console.error);
-// sendXRP().catch(console.error);
+getXRPAccountInfo(fromAddress).catch(console.error);
+sendXRP().catch(console.error);

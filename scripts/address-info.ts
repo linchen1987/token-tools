@@ -1,15 +1,15 @@
 import { ethers } from 'ethers';
-import {
-  ETH_MAINNET_PROVIDER,
-  ETH_TESTNET_PROVIDER,
-} from '../configs/networks';
+import { ETH_MAINNET_PROVIDER, ETH_TESTNET_PROVIDER } from '../configs/networks';
+
+const config = {
+  providerConfig: ETH_MAINNET_PROVIDER,
+  addressConfig: '0x817Eda77C0b5442672bbDcE698712394660d87fb',
+};
 
 async function getAddressInfo() {
-  // 连接到以太坊主网
-  const provider = new ethers.JsonRpcProvider(ETH_TESTNET_PROVIDER);
+  const provider = new ethers.JsonRpcProvider(config.providerConfig);
 
-  // 要查询的地址
-  const address = '0x817Eda77C0b5442672bbDcE698712394660d87fb';
+  const address = config.addressConfig;
 
   try {
     // 获取账户余额

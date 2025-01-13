@@ -11,8 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "@ethereumjs/util": "^9.1.0",
-    "@turnkey/ethers": "^1.1.8",
-    "@turnkey/sdk-server": "^1.7.1",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.1.7",
     "dotenv": "^16.4.7",
