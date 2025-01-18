@@ -8,6 +8,7 @@ A collection of cryptocurrency tools for managing and interacting with various b
 
 - account information query | 账户信息查询
 - Send XRP transactions | 发送 XRP 交易
+- Send ETH transactions | 发送 ETH 交易
 
 ## Prerequisites | 前置要求
 
@@ -26,17 +27,12 @@ npm install
 
 ## Configuration | 配置
 
-Create a `.env` file in the root directory with the following content:
+Create a `.env` file in the root directory and reference `.env.example` file.
 
-在根目录创建 `.env` 文件，包含以下内容：
-
-```env
-ACCOUNT1_ADDRESS=your_xrp_address
-ACCOUNT1_SEED=your_xrp_seed
-ACCOUNT2_ADDRESS=destination_xrp_address
-```
+在根目录创建 `.env` 文件，参考 `.env.example` 文件。
 
 ## Available Scripts | 可用脚本
 
 - `tsx scripts/address-info.ts`: Query account information | 查询账户信息
+- `tsx scripts/send-eth.ts`: Send ETH transactions | 发送 ETH 交易
 - `tsx scripts/send-xrp.ts`: Send XRP transactions | 发送 XRP 交易

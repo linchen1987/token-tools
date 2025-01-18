@@ -5,9 +5,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // 从环境变量中读取账户信息
-const fromAddress = process.env.FROM_ADDRESS!;
-const fromSeed = process.env.FROM_SEED!;
-const toAddress = process.env.TO_ADDRESS!;
+const fromAddress = process.env.FROM_XRP_ADDRESS!;
+const fromSeed = process.env.FROM_XRP_SEED!;
+const toAddress = process.env.TO_XRP_ADDRESS!;
 
 async function getXRPAccountInfo(fromAddress: string) {
   // 连接到 XRP Testnet

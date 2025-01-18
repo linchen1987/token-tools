@@ -1,35 +1,44 @@
-import { ethers } from 'ethers';
-import { ETH_MAINNET_PROVIDER, ETH_TESTNET_PROVIDER } from '../configs/networks';
+import { createPublicClient, http, formatEther } from 'viem';
+import dotenv from 'dotenv';
+import { CHAINS } from '../configs/networks';
 
-const config = {
-  providerConfig: ETH_MAINNET_PROVIDER,
-  addressConfig: '0x817Eda77C0b5442672bbDcE698712394660d87fb',
-};
+// Load environment variables
+dotenv.config();
+
+const { CHAIN, EVM_ADDRESS } = process.env;
+
+if (!EVM_ADDRESS) {
+  throw new Error('EVM_ADDRESS is required in .env file');
+}
+
+const transport = http();
+const client = createPublicClient({
+  chain: CHAINS[CHAIN as keyof typeof CHAINS],
+  transport,
+});
 
 async function getAddressInfo() {
-  const provider = new ethers.JsonRpcProvider(config.providerConfig);
-
-  const address = config.addressConfig;
-
   try {
-    // 获取账户余额
-    const balance = await provider.getBalance(address);
+    // Get account balance
+    const balance = await client.getBalance({ address: EVM_ADDRESS as `0x${string}` });
 
-    // 将余额转换为 ETH 单位
-    const balanceInEth = ethers.formatEther(balance);
+    console.log('balance', balance);
 
-    // 获取该地址的交易数量
-    const transactionCount = await provider.getTransactionCount(address);
+    // Convert balance to ETH units
+    const balanceInEth = formatEther(balance);
 
-    console.log('地址信息：', {
-      address: address,
-      余额: `${balanceInEth} ETH`,
-      交易次数: transactionCount,
+    // Get transaction count
+    const transactionCount = await client.getTransactionCount({ address: EVM_ADDRESS as `0x${string}` });
+
+    console.log('Address Info:', {
+      address: EVM_ADDRESS,
+      balance: `${balanceInEth} ETH`,
+      transactionCount,
     });
   } catch (error) {
-    console.error('查询出错：', error);
+    console.error('Error querying address info:', error);
   }
 }
 
-// 执行函数
+// Execute function
 getAddressInfo();
