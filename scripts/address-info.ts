@@ -22,8 +22,6 @@ async function getAddressInfo() {
     // Get account balance
     const balance = await client.getBalance({ address: EVM_ADDRESS as `0x${string}` });
 
-    console.log('balance', balance);
-
     // Convert balance to ETH units
     const balanceInEth = formatEther(balance);
 
