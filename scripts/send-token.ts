@@ -1,6 +1,7 @@
 import { createWalletClient, http, parseEther, parseUnits, createPublicClient } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import dotenv from 'dotenv';
+import { erc20Abi } from '../abi/erc20';
 
 import { CHAINS } from '../configs/networks';
 // Load environment variables
@@ -9,8 +10,8 @@ dotenv.config();
 const { FROM_EVM_ADDRESS, FROM_EVM_SK, TO_EVM_ADDRESS, AMOUNT, CHAIN = 'hardhat', TOKEN_ADDRESS } = process.env;
 
 // Select chain from environment variable
-if (!['mainnet', 'hardhat'].includes(CHAIN)) {
-  throw new Error('Invalid chain specified. Use "mainnet" or "hardhat"');
+if (!Object.keys(CHAINS).includes(CHAIN as keyof typeof CHAINS)) {
+  throw new Error(`Invalid chain specified. Use ${Object.keys(CHAINS).join(', ')}`);
 }
 
 const chain = CHAINS[CHAIN as keyof typeof CHAINS];
@@ -27,25 +28,7 @@ if (!/^0x[0-9a-fA-F]{64}$/.test(normalizedPrivateKey)) {
 }
 
 // ERC20 ABI for transfer and decimals functions
-const erc20ABI = [
-  {
-    constant: false,
-    inputs: [
-      { name: '_to', type: 'address' },
-      { name: '_value', type: 'uint256' },
-    ],
-    name: 'transfer',
-    outputs: [{ name: '', type: 'bool' }],
-    type: 'function',
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    type: 'function',
-  },
-] as const;
+const erc20ABI = erc20Abi;
 
 async function sendToken() {
   try {
@@ -72,8 +55,12 @@ async function sendToken() {
       functionName: 'decimals',
     })) as number;
 
+    console.log('token decimals', decimals);
+
     // Parse amount with correct decimals
     const amount = parseUnits(AMOUNT || '0.01', decimals);
+
+    console.log('token amount', amount);
 
     // Send transaction
     const hash = await walletClient.writeContract({

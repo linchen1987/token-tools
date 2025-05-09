@@ -31,4 +31,24 @@ export const CHAINS = {
       public: { http: ['http://127.0.0.1:8545'] },
     },
   } as Chain,
+  flareTestnet: {
+    id: 16,
+    name: 'Flare Coston',
+    rpcUrls: {
+      default: { http: ['https://coston-api.flare.network/ext/bc/C/rpc'] },
+      public: { http: ['https://coston-api.flare.network/ext/bc/C/rpc'] },
+    },
+    nativeCurrency: {
+      name: 'Coston',
+      symbol: 'CFLR',
+      decimals: 18,
+    },
+    blockExplorers: {
+      default: {
+        name: 'Coston Explorer',
+        url: 'https://coston-explorer.flare.network/',
+        apiUrl: 'https://coston-api.flare.network/ext/bc/C/rpc',
+      },
+    },
+  } as Chain,
 };
